@@ -5,8 +5,10 @@ import App from './App/index';
 import * as serviceWorker from './serviceWorker';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo'
+import { ApolloLink } from 'apollo-link'
 
 const GITHUB_BASE_URL = 'https://api.github.com/graphql';
 console.log(process.env.REACT_APP_GITHUB_PERSONAL_ACCESS_TOKEN)
@@ -22,8 +24,20 @@ const httpLink = new HttpLink({
 
 const cache = new InMemoryCache();
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if(graphQLErrors) {
+
+  }
+
+  if(networkError) {
+
+  }
+});
+
+const link = ApolloLink.from([errorLink, httpLink]);
+
 const client = new ApolloClient({
-  link: httpLink,
+  link,
   cache,
 });
 
